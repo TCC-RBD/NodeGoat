@@ -4,8 +4,6 @@ pipeline {
     tools {nodejs "node"}
     environment {
       SEMGREP_APP_TOKEN = credentials('semgrep-scan')
-    //   DOJO_HOST = 'http://localhost:9000'
-    //   DOJO_API_TOKEN = 'd56d4b30c4b8e877dc0a53fcd46994973f547e68'
     }
 
     stages {
@@ -59,16 +57,8 @@ pipeline {
                 
                 archiveArtifacts artifacts: 'scanresults/trufflehog-report.html', allowEmptyArchive: true
             }
-        }
-
-        // stage("OWASP Dependency Check"){
-        //     steps{
-        //         dependencyCheck additionalArguments: '--scan ./ ', odcInstallation: 'DP-Check'
-        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml' 
-        //         sh 'exit 0' 
-        //     }
-        // }
-    
+            
+        }    
     
         stage('Snyk Scan') {
             steps {
@@ -110,24 +100,22 @@ pipeline {
     //                 // '''
     //                 sh 'exit 0'
                 
-    //             echo 'Dastardly Scanning Completed.'
-    //             // echo 'Upload Dastardly Scan to DefectDojo'
-    //             // steps {
-    //             //     sh '''
-    //             //     upload-results.py --host $DOJO_HOST --api_key $DOJO_API_TOKEN \
-    //             //     --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" \
-    //             //      --result_file dastardly-report.xml --scanner "Snyk Scan"
-    //             //     '''
-    //             // }
-    //         }
-    //         post {
-    //             always {
-    //                 junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
-    //             }
-    //         }
-    //     }
-
-    
+                echo 'Dastardly Scanning Completed.'
+                // echo 'Upload Dastardly Scan to DefectDojo'
+                // steps {
+                //     sh '''
+                //     upload-results.py --host $DOJO_HOST --api_key $DOJO_API_TOKEN \
+                //     --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" \
+                //      --result_file dastardly-report.xml --scanner "Snyk Scan"
+                //     '''
+                // }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
+                }
+            }
+        }
 
        
         stage('Deploy to PROD') {
