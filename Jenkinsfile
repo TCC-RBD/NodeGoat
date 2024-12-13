@@ -23,7 +23,7 @@ pipeline {
                 -e SEMGREP_APP_TOKEN=$SEMGREP_APP_TOKEN \
                 -v "$(pwd):$(pwd)" --workdir $(pwd) \
                 returntocorp/semgrep semgrep ci --code --junit-xml-output semgrep-report.xml'''
-                sh 'exit 0' //continue build otherwise use delete exit code
+                sh 'exit 0' 
             }
             post {
                 always {
@@ -92,30 +92,17 @@ pipeline {
     //                 -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml \
     //                 public.ecr.aws/portswigger/dastardly:latest \
     //                 '''
-    //                 // sh '''
-    //                 // docker run --network host --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw \
-    //                 // -e BURP_START_URL=https://juice-shop.herokuapp.com \
-    //                 // -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml \
-    //                 // public.ecr.aws/portswigger/dastardly:latest \
-    //                 // '''
     //                 sh 'exit 0'
                 
-                echo 'Dastardly Scanning Completed.'
-                // echo 'Upload Dastardly Scan to DefectDojo'
-                // steps {
-                //     sh '''
-                //     upload-results.py --host $DOJO_HOST --api_key $DOJO_API_TOKEN \
-                //     --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" \
-                //      --result_file dastardly-report.xml --scanner "Snyk Scan"
-                //     '''
-                // }
-            }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
-                }
-            }
-        }
+    //             echo 'Dastardly Scanning Completed.'
+                
+    //         }
+    //         post {
+    //             always {
+    //                 junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
+    //             }
+    //         }
+    //     }
 
        
         stage('Deploy to PROD') {
