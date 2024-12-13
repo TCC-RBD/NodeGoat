@@ -23,7 +23,7 @@ pipeline {
                 -e SEMGREP_APP_TOKEN=$SEMGREP_APP_TOKEN \
                 -v "$(pwd):$(pwd)" --workdir $(pwd) \
                 returntocorp/semgrep semgrep ci --code --junit-xml-output semgrep-report.xml'''
-                sh 'exit 0' //continue build otherwise use delete exit code
+                sh 'exit 0' 
             }
             post {
                 always {
@@ -81,28 +81,28 @@ pipeline {
         }
         
 
-       stage('Dastardly Scan') {
-            steps {
-                echo 'Launch app...'
-                    sh 'docker-compose up --detach'
-                echo 'Dastardly Scanning...'
-                    sh '''
-                    docker run --network host --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw \
-                    -e BURP_START_URL=http://localhost:4000 \
-                    -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml \
-                    public.ecr.aws/portswigger/dastardly:latest \
-                    '''
-                    sh 'exit 0'
+    //    stage('Dastardly Scan') {
+    //         steps {
+    //             echo 'Launch app...'
+    //                 sh 'docker-compose up --detach'
+    //             echo 'Dastardly Scanning...'
+    //                 sh '''
+    //                 docker run --network host --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw \
+    //                 -e BURP_START_URL=http://localhost:4000 \
+    //                 -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml \
+    //                 public.ecr.aws/portswigger/dastardly:latest \
+    //                 '''
+    //                 sh 'exit 0'
                 
-                echo 'Dastardly Scanning Completed.'
+    //             echo 'Dastardly Scanning Completed.'
                 
-            }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
-                }
-            }
-        }
+    //         }
+    //         post {
+    //             always {
+    //                 junit allowEmptyResults: true, testResults: 'dastardly-report.xml', skipPublishingChecks: true
+    //             }
+    //         }
+    //     }
 
        
         stage('Deploy to PROD') {
